@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prenotazione Visite Specialistiche</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Prenotazione Visite Specialistiche</h1>
+    <form id="bookingForm">
+        <label for="type">Tipo di Visita:</label>
+        <select id="type" required></select>
+
+        <label for="date">Data:</label>
+        <input type="date" id="date" required>
+
+        <label for="hour">Ora:</label>
+        <input type="number" id="hour" min="8" max="17" required>
+
+        <label for="name">Nome:</label>
+        <input type="text" id="name" required>
+
+        <button type="submit">Prenota</button>
+    </form>
+
+    <h2>Elenco Prenotazioni</h2>
+    <table id="bookingsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Data</th>
+                <th>Ora</th>
+                <th>Nome</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="index.js"></script>
+</body>
+</html>
