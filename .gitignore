@@ -131,3 +131,4 @@ dist
 
 conf.json
 ca.pem
+package-lock.json
