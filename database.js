@@ -89,7 +89,17 @@ const database = {
             DROP TABLE IF EXISTS accident
            `;
       await executeQuery(sql);
-   }
+   },
+   truncate: async () => {
+      let sql = `
+        TRUNCATE TABLE accident;
+           `;
+      await executeQuery(sql)
+       sql = `
+        TRUNCATE TABLE plates;
+           `;
+      await executeQuery(sql)
+    }
 }
 
 module.exports = database;
