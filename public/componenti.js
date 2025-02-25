@@ -1,13 +1,21 @@
 const giorno_iniziale = () => {
     let oggi = new Date();
     let giorno_settimanale = oggi.getDay();
-
+    
     if (giorno_settimanale === 6){
         oggi.setDate(oggi.getDate() + 2);
     } else if (giorno_settimanale === 0){
         oggi.setDate(oggi.getDate() + 1);
+    } else if (giorno_settimanale === 2){
+        oggi.setDate(oggi.getDate() - 1);
+    } else if (giorno_settimanale === 3){
+        oggi.setDate(oggi.getDate() - 2);
+    } else if (giorno_settimanale === 4){
+        oggi.setDate(oggi.getDate() - 3);
+    } else if (giorno_settimanale === 5){
+        oggi.setDate(oggi.getDate() - 4);
     }
-    console.log(oggi)
+    console.log(oggi,giorno_settimanale)
     return oggi;
 };
 
@@ -118,7 +126,7 @@ const createSpecialtyTabs = (parentElement,reparti) => {
     };
   };
 
-const createBookButton = (parentElement) => {
+const createBookButton = (parentElement,form) => {
     return {
       render: () => {
         parentElement.innerHTML = `
@@ -178,7 +186,7 @@ const crea_lista_diz = (result) => {
 
 const createForm = () => {
   let data;
-  callback = null;
+  let callback = null;
 
   const modal = document.getElementById("modal");
   modal.style.display = "none";

@@ -1,0 +1,112 @@
+.container{
+    display: none;
+    position: absolute;
+}
+
+.reparti-prenota{
+    display: flex;
+    justify-content: space-between;
+}
+
+.dprenota{
+    display: flex;
+}
+
+.prenota{
+    width: 130px;
+    height: 45px;
+    background-color: rgb(65, 115, 190);
+    border-radius: 130px;
+    color: white;
+}
+
+.prenota:hover{
+    background-color:  rgb(95, 132, 187);;
+}
+
+.reparti{
+    display: flex;
+}
+
+.reparto{
+    width: 100px;
+    height: 40px;
+    background-color: white;
+}
+
+.bottoni_set{
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.settimana{
+    width: 80px;
+    height: 30px;
+    border-radius: 130px;
+    background-color: white;
+}
+
+.settimana:hover{
+    background-color: lightgray;
+}
+
+  
+.header {
+    display: flex;
+    margin-bottom: 10px;
+}
+  
+.specialty-tab {
+    padding: 10px 20px;
+    margin-right: 5px;
+    background-color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+}
+  
+.specialty-tab.active {
+    background-color: black;
+    color: white;
+}
+
+.book-button {
+    padding: 10px 20px;
+    background-color: #ff5722;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.modal-content {
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 500px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+.close-button {
+    cursor: pointer;
+    float: right;
+}

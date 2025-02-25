@@ -19,24 +19,23 @@ successivo.onclick = () => {
     table.crea(lista_diz, hours, giorno);
 };
 
-
-let table = createTable(document.querySelector("#table"));
-let giorno = giorno_iniziale();
-let hours = ["08:00", "09:00", "10:00", "11:00", "12:00"];
-lista_diz=crea_lista_diz([])
-table.build( ["LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDÌ", "VENERDÌ"]);
-let lunedi = giorno_iniziale()
-table.creaheader(lunedi);
-table.crea(lista_diz, hours,lunedi);
-
 // Creazione dei tab di specialità
 let specialtyTabs;
 let chiave;
 // Creazione dei tab di specialità e del bottone di prenota
-specialtyTabs = createSpecialtyTabs(document.getElementById("specialty-tabs"), config.tipologie);
-const bookButton = createBookButton(document.getElementById("controls"));
+specialtyTabs = createSpecialtyTabs(document.getElementById("specialty-tabs"), ["Cardiologia", "Psicologia", "Oncologia", "Ortopedia", "Neurologia"]);
 specialtyTabs.render();
-bookButton.render();
+
+let table = createTable(document.querySelector("#table"));
+let giorno = giorno_iniziale();
+let hours = ["08:00", "09:00", "10:00", "11:00", "12:00"];
+
+let lista_diz = [];
+lista_diz=crea_lista_diz({})
+table.build( ["LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDÌ", "VENERDÌ"]);
+let lunedi = giorno_iniziale()
+table.creaheader(lunedi);
+table.crea(lista_diz, hours,lunedi);
 
 const form = createForm(document.getElementById("form"));
 form.setlabels([["Data", "date"],
@@ -49,3 +48,5 @@ form.submit = ((formData) => {
     console.log("Dati inviati:", formData);
     Booking(formData); // Esegue la funzione di prenotazione con i dati inviati
 });
+const bookButton = createBookButton(document.getElementById("controls"),form);
+bookButton.render();
