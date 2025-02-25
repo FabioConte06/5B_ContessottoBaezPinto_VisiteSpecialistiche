@@ -1,6 +1,6 @@
 let specialtyTabs;
 let chiave;
-const createSpecialtyTabs = (parentElement,reparti) => {
+export const createSpecialtyTabs = (parentElement,reparti) => {
   let activeIndex = 0; 
   console.log(parentElement)
   console.log(reparti)
@@ -36,7 +36,7 @@ const createSpecialtyTabs = (parentElement,reparti) => {
   };
 };
 //crea il bottone di prenota
-const createBookButton = (parentElement) => {
+export const createBookButton = (parentElement) => {
   return {
     render: () => {
       parentElement.innerHTML = `

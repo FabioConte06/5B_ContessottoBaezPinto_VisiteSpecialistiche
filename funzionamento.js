@@ -18,7 +18,7 @@ successivo.onclick=()=>{
 }
 
 //funzione per il calcolo del giorno di partenza, ossia lunedì e toglie sabati e domeniche
-const giorno_iniziale = () => {
+export const giorno_iniziale = () => {
     let oggi = new Date();
     let giorno_settimanale = oggi.getDay();
 
@@ -32,7 +32,7 @@ const giorno_iniziale = () => {
 };
 
 //creazione del componente tabella
-const createTable = (parentElement) => {
+export const createTable = (parentElement) => {
     let data = null;
     let header;
     let newrow = [];
@@ -118,7 +118,7 @@ GetData().then(()=>{
     })
 
     }
-  )
+)
 
 //set Interval per aggiornare i dati ogni 3 minuti
 setInterval(()=>{
