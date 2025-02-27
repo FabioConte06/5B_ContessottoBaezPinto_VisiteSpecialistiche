@@ -20,7 +20,7 @@ showLoginButton.onclick = () => {
 // Funzione per il login
 const login = async (username, password) => {
   try {
-    const confResponse = await fetch("..conf.json");
+    const confResponse = await fetch("../conf.json");
     if (!confResponse.ok) throw new Error("Errore nel caricamento di conf.json");
     const confData = await confResponse.json();
 
@@ -40,8 +40,10 @@ const login = async (username, password) => {
       alert("Login effettuato con successo!");
       sessionStorage.setItem("Logged", "true");
       openModalButton.style.display = "block";
+      loginModal.style.display = "none";
     } else {
       alert("Credenziali errate.");
+      loginModal.style.display = "none";
     }
   } catch (error) {
     console.error("Errore login:", error);
