@@ -1,3 +1,36 @@
+let giornoglobale;
+
+const Aggiorna =(booking,database,table)=>{
+    console.log(database,booking)
+        database.add(booking).then(r=>{
+          console.log(r)
+          if (r.result==="ok"){
+             database.load().then((result_get) => {
+                console.log("genera")
+                console.log(result_get)
+                let lista_diz=crea_lista_diz(result_get)
+                let giorno = giorno_iniziale();
+                let hours = ["08:00", "09:00", "10:00", "11:00", "12:00"];
+                table.creaheader(giornoglobale)
+                table.crea(lista_diz, hours,giornoglobale);
+            })
+          }
+       })
+ }
+ 
+const formatTime = (time) => {
+    // Converti il numero in una stringa per poterlo manipolare
+    let timeStr = time.toString();
+  
+    // Aggiungi uno zero davanti se la stringa ha una lunghezza inferiore a 4
+    if (timeStr.length === 3) {
+      timeStr = '0' + timeStr;
+    }
+  
+    // Inserisci i due punti tra le ore e i minuti
+    return timeStr.slice(0, 2) + ':' + timeStr.slice(2);
+};
+
 const giorno_iniziale = () => {
     let oggi = new Date();
     let giorno_settimanale = oggi.getDay();
@@ -46,7 +79,9 @@ const createTable = (parentElement) => {
 
         crea: (listadata, hours, lunedi) => {
             let Row = "";
+            let rep;
             let nom_rep = document.querySelector(".active").textContent.trim()
+            giornoglobale=lunedi
             const currentWeek = [];
             console.log(lunedi)
             // Creiamo un'altra copia di `lunedi`
@@ -68,12 +103,12 @@ const createTable = (parentElement) => {
                     const dayString = day.toISOString().split("T")[0];
                     //controllo dati e prenotazioni
                     listadata.forEach((prenotazione)=>{
-                        if (nom_rep===prenotazione[0] && prenotazione[1]===dayString && prenotazione[2]===hour){
+                        let ora =formatTime(prenotazione[3])
+                        if (nom_rep===prenotazione[1] && prenotazione[2].split("T")[0]===dayString && ora===hour){
                             console.log("giorno e ora uguale")
-                            paziente=prenotazione[3]
+                            paziente=prenotazione[4]
                         }
                     })
-                    console.log(paziente)
                     //se ha trovato il paziente o inserisce altrimenti la casella rimane vuota
                     if (paziente!=""){
                         Row += `<td>${paziente}</td>`;
@@ -90,7 +125,8 @@ const createTable = (parentElement) => {
         }
     }
 }
-const createSpecialtyTabs = (parentElement,reparti) => {
+
+const createSpecialtyTabs = (parentElement,reparti,table,database) => {
     let activeIndex = 0; 
     console.log(parentElement)
     console.log(reparti)
@@ -113,9 +149,15 @@ const createSpecialtyTabs = (parentElement,reparti) => {
         Array.from(parentElement.querySelectorAll("button")).forEach(button => {
           button.addEventListener("click", () => {
             const index = parseInt(button.getAttribute("data-index")); 
-            this.setActive(index); 
-            table.creaheader(giorno)
-            table.crea(lista_diz, hours,giorno);
+            this.setActive(index);
+            let giorno = giorno_iniziale();
+            database.load().then(res => {
+                console.log(res)
+                let hours = ["08:00", "09:00", "10:00", "11:00", "12:00"];
+                let lista_diz=crea_lista_diz(res)
+                table.creaheader(giorno)
+                table.crea(lista_diz, hours,giorno);
+            }) 
           });
         });
       },
@@ -139,100 +181,145 @@ const createBookButton = (parentElement,form) => {
     };
   };
 
-const createMiddleware = () => {
+  const createMiddleware = () => {
     return {
-      load: async () => {
-        const response = await fetch("/accidents");
-        const json = await response.json();
-        return json;
-      },
-      delete: async (id) => {
-        const response = await fetch("/delete/" + id, {
-          method: 'DELETE',
-        });
-        const json = await response.json();
-        return json;
-      },
-      add: async (accident) => {
-        const response = await fetch("/insert", {
-            method: 'POST',
-            headers: {
-                "content-type": "application/json"
-            },
-            body: JSON.stringify({
-                accident: accident
-            })
-        });
-        const json = await response.json();
-        return json;        
-      }
-    }
-}
-
-const crea_lista_diz = (result) => {
-  let lista_diz = [];
-  const chiaviPrenotazioni = Object.keys(result);
-  
-  chiaviPrenotazioni.forEach((chiave_diz) => {
-      // Per ogni chiave, crea una lista separando gli elementi con "/"
-      let lista_prenotazione = chiave_diz.split("/");
-      lista_prenotazione.push(result[chiave_diz]);
-      lista_diz.push(lista_prenotazione);
-  });
-  
-  console.log(lista_diz);
-  return lista_diz;
+        load: async () => {
+            const response = await fetch("http://localhost:5600/bookings");
+            const json = await response.json();
+            return json;
+        },
+        loadByDate: async (date) => {
+            const response = await fetch("http://localhost:5600/bookings/date/" + date);
+            const json = await response.json();
+            return json;
+        },
+        delete: async (id) => {
+            const response = await fetch("http://localhost:5600/delete-booking/" + id, {
+                method: "DELETE",
+            });
+            const json = await response.json();
+            return json;
+        },
+        add: async (booking) => {
+            const response = await fetch("http://localhost:5600/insert-booking", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ booking: booking }),
+            });
+            const json = await response.json();
+            return json;
+        },
+        truncateTables: async () => {
+            const response = await fetch("http://localhost:5600/truncate-tables", {
+                method: "DELETE",
+            });
+            const json = await response.json();
+            return json;
+        },
+        dropTables: async () => {
+            const response = await fetch("http://localhost:5600/drop-tables", {
+                method: "DELETE",
+            });
+            const json = await response.json();
+            return json;
+        },
+        addType: async (nametype) => {
+            const response = await fetch("http://localhost:5600/insert-type", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name: nametype }),
+            });
+            return await response.json();
+        },
+        loadTypes: async () => {
+            const response = await fetch("http://localhost:5600/types");
+            return await response.json();
+        }
+    };
 };
 
-const createForm = () => {
-  let data;
-  let callback = null;
 
-  const modal = document.getElementById("modal");
-  modal.style.display = "none";
-
-  const closeModal = () => {
-      modal.style.display = "none";
+const crea_lista_diz = (result) => {
+    let lista_diz = result.map(d => Object.values(d));
+    console.log(lista_diz);
+    return lista_diz;
   };
+  
+const createForm = (database,table) => {
+    let data;
+    let callback = null;
 
-  const openModal = () => {
-      modal.style.display = "block";
-  };
+    const modal = document.getElementById("modal");
+    modal.style.display = "none";
 
-  const renderModalContent = () => {
-      // Aggiunge il contenuto HTML alla modale, compreso il form e i pulsanti
-      modal.innerHTML = `
-          <div class="modal-content">
-              <span class="close-button" id="closeButton"></span>
-              <div id="formContent"></div>
-              <div id="Message"></div>
-              <button type="button" class="btn btn-primary" id="submit">PRENOTA</button>
-              <button type="button" class="btn btn-secondary" id="cancel">ANNULLA</button>
-          </div>
-      `;
+    const closeModal = () => {
+        modal.style.display = "none";
+    };
 
-      document.getElementById("Message").onclick = closeModal;
-      document.getElementById("closeButton").onclick = closeModal;
-      document.getElementById("cancel").onclick = closeModal;
+    const openModal = () => {
+        modal.style.display = "block";
+    };
 
-      const submitButton = document.getElementById("submit");
-      submitButton.onclick = () => {
-          const result = {};
-          data.forEach((index) => {
-              result[index[0]] = document.getElementById(index[0]).value;
-          });
-          let nom_rep = document.querySelector(".active").textContent.trim();
-          console.log(nom_rep);
-          result["Reparto"] = nom_rep;
-          let chiave_d = `${result["Reparto"]}/${result["Data"]}/${result["Orario Prenotazione"]}`;
-          Aggiorna(chiave_d, result["Nominativo"]);
-          document.getElementById("Message").innerText = "Prenotazione eseguita con successo";
-          if (callback) {
-              console.log(result);
-              callback(result);
-          }
-      };
-  };
+    const renderModalContent = () => {
+        // Aggiunge il contenuto HTML alla modale, compreso il form e i pulsanti
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close-button" id="closeButton"></span>
+                <div id="formContent"></div>
+                <div id="Message"></div>
+                <button type="button" class="btn btn-primary" id="submit">PRENOTA</button>
+                <button type="button" class="btn btn-secondary" id="cancel">ANNULLA</button>
+            </div>
+        `;
+
+        document.getElementById("Message").onclick = closeModal;
+        document.getElementById("closeButton").onclick = closeModal;
+        document.getElementById("cancel").onclick = closeModal;
+
+        const submitButton = document.getElementById("submit");
+        submitButton.onclick = () => {
+            const result = {};
+            let rep;
+            console.log(data)
+            data.forEach((index,i) => {
+                if (i===0){
+                    result["date"]=document.getElementById(index[0]).value
+                }
+                if (i===1){
+                    result["hour"]=document.getElementById(index[0]).value.replace(":","")
+                }
+                if (i===2){
+                    result["name"]=document.getElementById(index[0]).value
+                }
+            });
+            let nom_rep = document.querySelector(".active").textContent.trim();
+            console.log(nom_rep)
+            const reparti = {
+                "Cardiologia": 1,
+                "Psicologia": 2,
+                "Oncologia": 3,
+                "Ortopedia": 4,
+                "Neurologia": 5
+            };
+            
+            if (reparti[nom_rep] !== undefined) {
+                rep = reparti[nom_rep];
+                console.log("rep",rep)
+            }
+            result["idType"] = rep;
+            console.log(result)
+            Aggiorna(result,database,table);
+            document.getElementById("Message").innerText = "Prenotazione eseguita con successo";
+            if (callback) {
+                console.log(result);
+                callback(result);
+            }
+        };
+    };
 
   return {
       // Components
@@ -296,5 +383,6 @@ export {
     createMiddleware,
     createForm,
     crea_lista_diz,
-    Booking
+    Booking,
+    formatTime
 }

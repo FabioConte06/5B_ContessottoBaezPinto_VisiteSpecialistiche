@@ -20,86 +20,86 @@ const executeQuery = (sql) => {
 }
 
 const database = {
+   // Creazione delle tabelle booking e type
    createTable: async () => {
       await executeQuery(`
-         CREATE TABLE IF NOT EXISTS accident (
-         id INT PRIMARY KEY AUTO_INCREMENT,
-         address varchar(255) NOT NULL,
-         date DATE NOT NULL,
-         time TIME NOT NULL,
-         injured int NOT NULL,
-         dead int NOT NULL)             
-      `);
-      return await executeQuery(`
-         CREATE TABLE IF NOT EXISTS plates (
+         CREATE TABLE IF NOT EXISTS type (
             id INT PRIMARY KEY AUTO_INCREMENT,
-            plate VARCHAR(20) NOT NULL,
-            idAccident INT NOT NULL,
-            FOREIGN KEY (idAccident) REFERENCES accident(id) ON DELETE CASCADE)      
+            name VARCHAR(20) NOT NULL
+         )
+      `);
+
+      await executeQuery(`
+         CREATE TABLE IF NOT EXISTS booking (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            idType INT NOT NULL,
+            date DATE NOT NULL,
+            hour INT NOT NULL,
+            name VARCHAR(50),
+            FOREIGN KEY (idType) REFERENCES type(id) ON DELETE CASCADE
+         )
       `);
    },
-   insert: async (accident) => {
+   insertType: async (name) => {
       let sql = `
-         INSERT INTO accident(address, date, time, injured, dead)
-         VALUES (
-            '${accident.address}', 
-            '${accident.date}', 
-            '${accident.time}', 
-            ${accident.injured}, 
-            ${accident.dead})
-           `;
-      const result = await executeQuery(sql);
-      accident.plates.forEach(async (element) => {
-         sql = `
-            INSERT INTO plates(plate, idAccident) 
-            VALUES (
-               '${element}', 
-               ${result.insertId})
-         `;
-         await executeQuery(sql);
-      });
+         INSERT INTO type (name)
+         VALUES ('${name}')
+      `;
+      return await executeQuery(sql);
    },
-   delete: (id) => {
-      let sql = `
-        DELETE FROM accident
-        WHERE id=${id}
-           `;
-      return executeQuery(sql);
+   selectTypes: async () => {
+      let sql = `SELECT * FROM type`;
+      return await executeQuery(sql);
    },
-   select: async () => {
-      let sql = `
-        SELECT id, address, date, time, injured, dead FROM accident 
-           `;
-      const result = await executeQuery(sql);
-      await Promise.all(result.map(async (accident) => {
-         sql = `
-            SELECT plate FROM plates WHERE idAccident=${accident.id} 
-           `;
-         const list = await executeQuery(sql);
-         accident.plates = list.map(p => p.plate);
-      }));
-      return result;
+   // Inserimento di una prenotazione
+   insertBooking: async (booking) => {
+      const sql = `
+         INSERT INTO booking (idType, date, hour, name)
+         VALUES (${booking.idType}, '${booking.date}', ${booking.hour}, '${booking.name}')
+      `;
+      return await executeQuery(sql);
    },
-   drop: async () => {
-      let sql = `
-            DROP TABLE IF EXISTS plates
-           `;
-      await executeQuery(sql);
-      sql = `
-            DROP TABLE IF EXISTS accident
-           `;
-      await executeQuery(sql);
+
+   // Selezionare tutte le prenotazioni con il nome del tipo associato
+   selectAllBookings: async () => {
+      const sql = `
+         SELECT b.id, t.name AS type, b.date, b.hour, b.name
+         FROM booking AS b
+         JOIN type AS t ON b.idType = t.id
+      `;
+      return await executeQuery(sql);
    },
-   truncate: async () => {
-      let sql = `
-        TRUNCATE TABLE accident;
-           `;
-      await executeQuery(sql)
-       sql = `
-        TRUNCATE TABLE plates;
-           `;
-      await executeQuery(sql)
-    }
-}
+
+   //Seleziona tutte le prenotazioni di un giorno
+   selectBookingsByDate: async (date) => {
+      const sql = `
+         SELECT b.id, t.name AS type, b.date, b.hour, b.name
+         FROM booking AS b
+         JOIN type AS t ON b.idType = t.id
+         WHERE b.date = '${date}'
+      `;
+      return await executeQuery(sql);
+   },
+
+   // Eliminare una prenotazione tramite ID
+   deleteBooking: async (id) => {
+      const sql = `
+         DELETE FROM booking WHERE id=${id}
+      `;
+      return await executeQuery(sql);
+   },
+
+   // Eliminare tutte le prenotazioni e i tipi
+   dropTables: async () => {
+      await executeQuery(`DROP TABLE IF EXISTS booking`);
+      await executeQuery(`DROP TABLE IF EXISTS type`);
+   },
+
+   // Svuotare le tabelle mantenendone la struttura
+   truncateTables: async () => {
+      await executeQuery(`TRUNCATE TABLE booking`);
+      await executeQuery(`TRUNCATE TABLE type`);
+   }
+};
 
 module.exports = database;

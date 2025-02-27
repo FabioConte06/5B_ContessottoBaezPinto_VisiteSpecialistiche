@@ -3,6 +3,13 @@ import { giorno_iniziale, createTable, createBookButton, createSpecialtyTabs, cr
 // Bottoni per le settimane precedenti e successive
 const precedente = document.querySelector(".precedente");
 const successivo = document.querySelector(".successiva");
+let lista_diz = [];
+//Middleware
+const database = createMiddleware();
+
+database.loadTypes().then(res => {
+    console.log(res)
+})
 
 // Funzione per aggiornare la tabella con i giorni della settimana precedente
 precedente.onclick = () => {
@@ -22,22 +29,25 @@ successivo.onclick = () => {
 // Creazione dei tab di specialità
 let specialtyTabs;
 let chiave;
-// Creazione dei tab di specialità e del bottone di prenota
-specialtyTabs = createSpecialtyTabs(document.getElementById("specialty-tabs"), ["Cardiologia", "Psicologia", "Oncologia", "Ortopedia", "Neurologia"]);
-specialtyTabs.render();
 
 let table = createTable(document.querySelector("#table"));
 let giorno = giorno_iniziale();
 let hours = ["08:00", "09:00", "10:00", "11:00", "12:00"];
 
-let lista_diz = [];
-lista_diz=crea_lista_diz({})
-table.build( ["LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDÌ", "VENERDÌ"]);
-let lunedi = giorno_iniziale()
-table.creaheader(lunedi);
-table.crea(lista_diz, hours,lunedi);
+specialtyTabs = createSpecialtyTabs(document.getElementById("specialty-tabs"), ["Cardiologia", "Psicologia", "Oncologia", "Ortopedia", "Neurologia"],table,database);
+specialtyTabs.render();
 
-const form = createForm(document.getElementById("form"));
+database.load().then(res => {
+    console.log(res)
+    lista_diz=crea_lista_diz(res)
+    table.build( ["LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDÌ", "VENERDÌ"]);
+    let lunedi = giorno_iniziale()
+    table.creaheader(lunedi);
+    table.crea(lista_diz, hours,lunedi);
+})
+
+
+const form = createForm(database,table);
 form.setlabels([["Data", "date"],
     ["Orario Prenotazione", "dropdown", ["08:00", "09:00", "10:00", "11:00", "12:00"]],
     ["Nominativo", "text"],
