@@ -4,6 +4,7 @@ const loginPassword = document.getElementById("password");
 const openModalButton = document.getElementById("openModalButton");
 const loginModal = document.getElementById('login');
 const showLoginButton = document.getElementById("showLoginButton");
+const cancel = document.getElementById("NULL");
 
 const isLogged = sessionStorage.getItem("Logged") === "true";
 
@@ -16,6 +17,10 @@ if (isLogged) {
 showLoginButton.onclick = () => {
     loginModal.style.display = "block";
   };
+
+cancel.onclick = () => {
+  loginModal.style.display = "none";
+}
 
 // Funzione per il login
 const login = async (username, password) => {
