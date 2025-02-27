@@ -5,11 +5,12 @@ const openModalButton = document.getElementById("openModalButton");
 const loginModal = document.getElementById('login');
 const showLoginButton = document.getElementById("showLoginButton");
 const cancel = document.getElementById("NULL");
-
 const isLogged = sessionStorage.getItem("Logged") === "true";
-
+console.log(isLogged)
 if (isLogged) {
   openModalButton.style.display = "block";
+  document.querySelector("#showLoginButton").style.display = "none";
+
 } else {
   openModalButton.style.display = "none";
 }
@@ -42,10 +43,10 @@ const login = async (username, password) => {
     const result = await response.json();
 
     if (result.result === true) {
-      alert("Login effettuato con successo!");
       sessionStorage.setItem("Logged", "true");
       openModalButton.style.display = "block";
       loginModal.style.display = "none";
+      document.querySelector("#showLoginButton").style.display = "none";
     } else {
       alert("Credenziali errate.");
       loginModal.style.display = "none";

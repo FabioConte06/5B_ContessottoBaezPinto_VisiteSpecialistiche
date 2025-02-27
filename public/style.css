@@ -1,3 +1,7 @@
+body{
+    margin: 5px;
+}
+
 .container{
     display: none;
     position: absolute;
@@ -34,11 +38,38 @@
     background-color: white;
 }
 
-.bottoni_set{
-    margin-top: 30px;
+.bottoni_set {
+    margin-top: 20px;
+    margin-bottom: 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center; 
+    gap: 15px; 
 }
+
+.bottoni_set button {
+    padding: 10px 20px;
+    background-color: #ff8c00; 
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bottoni_set button:hover {
+    background-color: #ff7a21;
+    transform: scale(1.05); 
+}
+
+.bottoni_set button i {
+    font-size: 18px;
+}
+
 
 .settimana{
     width: 80px;
@@ -63,6 +94,10 @@
     background-color: #f0f0f0;
     border: none;
     cursor: pointer;
+}
+
+.specialty-tab:not(.active):hover{
+    background-color: rgb(220, 226, 232);
 }
   
 .specialty-tab.active {
@@ -109,4 +144,42 @@
 .close-button {
     cursor: pointer;
     float: right;
+}
+
+#showLoginButton {
+    position: absolute;
+    top: 61px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 25px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#showLoginButton:hover {
+    background-color: #0056b3;
+}
+
+#showLoginButton i {
+    margin-left: 5px;
+}
+
+.btn{
+    margin-top: 5px;
+}
+
+.modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
