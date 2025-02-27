@@ -183,3 +183,50 @@ body{
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
+
+.appointment-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background: #f9f9f9;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.date-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.appointments {
+    margin-top: 15px;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.appointments h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+#appointment-list {
+    list-style: none;
+    padding: 0;
+}
+
+#appointment-list li {
+    background: #e3f2fd;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border-left: 5px solid #2196f3;
+    font-size: 14px;
+}

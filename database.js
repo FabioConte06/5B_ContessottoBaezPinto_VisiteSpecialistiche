@@ -76,7 +76,7 @@ const database = {
          SELECT b.id, t.name AS type, b.date, b.hour, b.name
          FROM booking AS b
          JOIN type AS t ON b.idType = t.id
-         WHERE b.date = '${date}'
+         WHERE DATE(b.date) = '${date}'
       `;
       return await executeQuery(sql);
    },
@@ -92,7 +92,6 @@ const database = {
    // Eliminare tutte le prenotazioni e i tipi
    dropTables: async () => {
       await executeQuery(`DROP TABLE IF EXISTS booking`);
-      await executeQuery(`DROP TABLE IF EXISTS type`);
    },
 
    // Svuotare le tabelle mantenendone la struttura

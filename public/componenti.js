@@ -6,10 +6,19 @@ const Aggiorna =(booking,database,table)=>{
           console.log(r)
           if (r.result==="ok"){
              database.load().then((result_get) => {
-                console.log("genera")
-                console.log(result_get)
+                result_get.forEach(app=>{
+                    const date = new Date(app.date);
+
+                    const year = date.getFullYear();
+                    const month = date.getMonth() + 1; // Aggiungi 1 perché i mesi partono da 0
+                    const day = date.getDate();
+
+                    const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    console.log(formattedDate);
+                    app.date=formattedDate
+                })
                 let lista_diz=crea_lista_diz(result_get)
-                let giorno = giorno_iniziale();
+                console.log(giornoglobale)
                 let hours = ["08:00", "09:00", "10:00", "11:00", "12:00"];
                 table.creaheader(giornoglobale)
                 table.crea(lista_diz, hours,giornoglobale);
@@ -83,7 +92,6 @@ const createTable = (parentElement) => {
             let nom_rep = document.querySelector(".active").textContent.trim()
             giornoglobale=lunedi
             const currentWeek = [];
-            console.log(lunedi)
             // Creiamo un'altra copia di `lunedi`
             let tempDate = new Date(lunedi);
 
@@ -150,13 +158,22 @@ const createSpecialtyTabs = (parentElement,reparti,table,database) => {
           button.addEventListener("click", () => {
             const index = parseInt(button.getAttribute("data-index")); 
             this.setActive(index);
-            let giorno = giorno_iniziale();
             database.load().then(res => {
-                console.log(res)
+                res.forEach(app=>{
+                    const date = new Date(app.date);
+
+                    const year = date.getFullYear();
+                    const month = date.getMonth() + 1; // Aggiungi 1 perché i mesi partono da 0
+                    const day = date.getDate();
+
+                    const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    console.log(formattedDate);
+                    app.date=formattedDate
+                })
                 let hours = ["08:00", "09:00", "10:00", "11:00", "12:00"];
                 let lista_diz=crea_lista_diz(res)
-                table.creaheader(giorno)
-                table.crea(lista_diz, hours,giorno);
+                table.creaheader(giornoglobale)
+                table.crea(lista_diz, hours,giornoglobale);
             }) 
           });
         });
