@@ -1,41 +1,26 @@
-
 const loginButton = document.getElementById("login-button");
-const privateSection = document.getElementById("admin-page");
 const loginUsername = document.getElementById("username");
 const loginPassword = document.getElementById("password");
-const adminContent = document.getElementById("admin-content");
-const loginForm = document.getElementById("login-form"); 
-
-const adminAccessButton = document.getElementById("admin-access-button");
-const publicPage = document.getElementById("public-page");
-
+const openModalButton = document.getElementById("openModalButton");
+const loginModal = document.getElementById('login');
+const showLoginButton = document.getElementById("showLoginButton");
 
 const isLogged = sessionStorage.getItem("Logged") === "true";
 
-if (privateSection) {
-  if (isLogged) {
-    privateSection.style.display = "block";
-    if (publicPage) {
-      publicPage.style.display = "none";
-    }
-    if (loginForm) {
-      loginForm.style.display = "none"; 
-    }
-    if (adminContent) {
-      adminContent.style.display = "block";
-    }
-  } else {
-    privateSection.style.display = "none";
-    if (loginForm) {
-      loginForm.style.display = "block";
-    }
-  }
+if (isLogged) {
+  openModalButton.style.display = "block";
+} else {
+  openModalButton.style.display = "none";
 }
+
+showLoginButton.onclick = () => {
+    loginModal.style.display = "block";
+  };
 
 // Funzione per il login
 const login = async (username, password) => {
   try {
-    const confResponse = await fetch("conf.json");
+    const confResponse = await fetch("..conf.json");
     if (!confResponse.ok) throw new Error("Errore nel caricamento di conf.json");
     const confData = await confResponse.json();
 
@@ -43,7 +28,7 @@ const login = async (username, password) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        key: confData.token,
+        key: confData.cacheToken,
       },
       body: JSON.stringify({ username, password }),
     });
@@ -54,18 +39,7 @@ const login = async (username, password) => {
     if (result.result === true) {
       alert("Login effettuato con successo!");
       sessionStorage.setItem("Logged", "true");
-      if (privateSection) {
-        privateSection.style.display = "block";
-      }
-      if (publicPage) {
-        publicPage.style.display = "none";
-      }
-      if (adminContent) {
-        adminContent.style.display = "block";
-      }
-      if (loginForm) {
-        loginForm.style.display = "none"; 
-      }
+      openModalButton.style.display = "block";
     } else {
       alert("Credenziali errate.");
     }
@@ -74,7 +48,6 @@ const login = async (username, password) => {
     alert("Login fallito. Controlla le credenziali.");
   }
 };
-
 
 if (loginButton) {
   loginButton.onclick = () => {
@@ -86,14 +59,5 @@ if (loginButton) {
     } else {
       alert("Compila tutti i campi.");
     }
-  };
-}
-
-
-
-if (adminAccessButton && publicPage && privateSection) {
-  adminAccessButton.onclick = () => {
-    publicPage.style.display = "none";
-    privateSection.style.display = "block";
   };
 }
